@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy CA Day</title>
+<style>
+  :root{
+    --navy:#0b1f3a;
+    --navy-deep:#071527;
+    --teal:#0f9b8e;
+    --amber:#e8a33d;
+    --cream:#f7f3ea;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    height:100%;
+    background:radial-gradient(ellipse at top, var(--navy) 0%, var(--navy-deep) 70%);
+    font-family:'Georgia', 'Times New Roman', serif;
+    overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stage{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    text-align:center;
+  }
+  .eyebrow{
+    color:var(--amber);
+    font-family: 'Courier New', monospace;
+    letter-spacing:3px;
+    font-size:12px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    opacity:0.85;
+  }
+  h1{
+    color:var(--cream);
+    font-size:clamp(28px,7vw,44px);
+    margin:0 0 6px 0;
+    font-weight:400;
+    letter-spacing:0.5px;
+  }
+  .tagline{
+    color:var(--teal);
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    letter-spacing:3px;
+    font-weight:bold;
+  }
+  .ledger-line{
+    width:70px;
+    height:2px;
+    background:var(--teal);
+    margin:14px auto 22px auto;
+  }
+  #startBtn{
+    background:var(--teal);
+    color:var(--navy-deep);
+    border:none;
+    padding:16px 38px;
+    font-size:17px;
+    font-family:'Courier New', monospace;
+    font-weight:bold;
+    letter-spacing:1px;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 6px 20px rgba(15,155,142,0.4);
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  #startBtn:active{
+    transform:scale(0.95);
+    box-shadow:0 3px 10px rgba(15,155,142,0.5);
+  }
+  .message{
+    margin-top:30px;
+    max-width:340px;
+    color:var(--cream);
+    font-size:18px;
+    line-height:1.6;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .message.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .message .sign{
+    display:block;
+    margin-top:16px;
+    color:var(--amber);
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    letter-spacing:1px;
+  }
+  .balloon{
+    position:absolute;
+    bottom:-120px;
+    width:44px;
+    height:56px;
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    opacity:0.95;
+    animation-name:rise;
+    animation-timing-function:ease-in;
+    animation-fill-mode:forwards;
+  }
+  .balloon::after{
+    content:'';
+    position:absolute;
+    bottom:-16px;
+    left:50%;
+    width:1px;
+    height:16px;
+    background:rgba(247,243,234,0.5);
+  }
+  @keyframes rise{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0.95; }
+    85%{ opacity:0.9; }
+    100%{ transform:translateY(-115vh) translateX(var(--drift,20px)) rotate(8deg); opacity:0; }
+  }
+  .confetti{
+    position:absolute;
+    top:-20px;
+    width:8px;
+    height:14px;
+    opacity:0.95;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-fill-mode:forwards;
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) rotate(0deg); }
+    100%{ transform:translateY(110vh) rotate(540deg); }
+  }
+  .hint{
+    position:absolute;
+    bottom:22px;
+    color:rgba(247,243,234,0.35);
+    font-family:'Courier New', monospace;
+    font-size:11px;
+    letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="eyebrow">1st July · ICAI Foundation Day</div>
+    <h1>Happy CA Day</h1>
+    <div class="tagline">INNOVATE · AUTOMATE · INSPIRE</div>
+    <div class="ledger-line"></div>
+    <button id="startBtn">🎈 Tap to Celebrate</button>
+    <div class="message" id="msg">
+      Right prompt, right judgment — that's the CA edge no AI can replace.
+      From ledgers to LLMs, from vouching to validation — the tools keep
+      changing, but trust never does. Happy CA Day!
+      <span class="sign">— J M Tiwari &amp; Co, Chartered Accountants</span>
+    </div>
+  </div>
+  <div class="hint">tap anywhere to celebrate again</div>
+
+<script>
+const stage = document.getElementById('stage');
+const btn = document.getElementById('startBtn');
+const msg = document.getElementById('msg');
+
+const balloonColors = ['#0f9b8e', '#e8a33d', '#c1443c', '#f7f3ea', '#2c6e8f'];
+const confettiColors = ['#0f9b8e', '#e8a33d', '#f7f3ea', '#c1443c'];
+
+function launchBalloons(){
+  for(let i=0;i<14;i++){
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    const left = Math.random()*90 + 2;
+    const size = 34 + Math.random()*26;
+    const dur = 4.5 + Math.random()*2.5;
+    const delay = Math.random()*0.8;
+    const drift = (Math.random()*140 - 70) + 'px';
+    b.style.left = left + 'vw';
+    b.style.width = size + 'px';
+    b.style.height = (size*1.25) + 'px';
+    b.style.background = balloonColors[Math.floor(Math.random()*balloonColors.length)];
+    b.style.animationDuration = dur + 's';
+    b.style.animationDelay = delay + 's';
+    b.style.setProperty('--drift', drift);
+    stage.appendChild(b);
+    setTimeout(()=>b.remove(), (dur+delay)*1000 + 200);
+  }
+}
+
+function launchConfetti(){
+  for(let i=0;i<60;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    const left = Math.random()*100;
+    const dur = 2.5 + Math.random()*2;
+    const delay = Math.random()*0.6;
+    c.style.left = left + 'vw';
+    c.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+    c.style.animationDuration = dur + 's';
+    c.style.animationDelay = delay + 's';
+    stage.appendChild(c);
+    setTimeout(()=>c.remove(), (dur+delay)*1000 + 200);
+  }
+}
+
+function celebrate(){
+  launchBalloons();
+  launchConfetti();
+  msg.classList.add('show');
+}
+
+btn.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  celebrate();
+});
+document.body.addEventListener('click', celebrate);
+
+// Auto light confetti burst on load for a welcoming feel
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{ launchConfetti(); }, 400);
+});
+</script>
+</body>
+</html>
